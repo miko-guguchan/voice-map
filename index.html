@@ -11,7 +11,6 @@
         body { margin: 0; padding: 0; font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #fdfcf0; }
         #map { width: 100vw; height: 100vh; z-index: 1; }
         
-        /* 画面上部のタイトルデザイン */
         .header { 
             position: absolute; top: 15px; left: 50%; transform: translateX(-50%); 
             z-index: 1000; background: rgba(255, 255, 255, 0.95); 
@@ -20,8 +19,65 @@
             font-weight: bold; color: #003366; font-size: 16px;
             white-space: nowrap; border: 2px solid #11caa0;
         }
+
+        /* ✍️ 声を届けるボタン */
+        .open-form-btn {
+            position: fixed; bottom: 30px; right: 20px; z-index: 1000;
+            background: #ff6b81; color: white; padding: 15px 28px;
+            border-radius: 30px; font-weight: bold; text-decoration: none;
+            box-shadow: 0 4px 15px rgba(255, 107, 129, 0.4);
+            font-size: 16px; border: none; cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .open-form-btn:hover { background: #ff4757; transform: scale(1.05); }
         
-        /* 吹き出し（ポップアップ）のデザイン */
+        /* 🧱 モーダルウィンドウ（フワッと浮き出るフォーム） */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5); z-index: 2000;
+            display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: white; width: 95%; max-width: 550px; height: 85vh;
+            border-radius: 20px; padding: 30px; display: flex; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); position: relative;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(30px); } to { transform: translateY(0); } }
+        
+        .modal-close {
+            position: absolute; top: 20px; right: 20px; background: none; border: none;
+            font-size: 24px; cursor: pointer; color: #94a3b8;
+        }
+        
+        .form-container { overflow-y: auto; flex-grow: 1; padding-right: 10px; margin-top: 10px; }
+        
+        /* 宣言文のデザイン */
+        .declaration-box {
+            background: #f0fdfa; border: 1px solid #ccfbf1; padding: 15px;
+            border-radius: 12px; margin-bottom: 20px; font-size: 13px; color: #0f766e; line-height: 1.6;
+        }
+        .declaration-box strong { color: #0d9488; }
+        
+        /* 入力項目のデザイン */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 8px; color: #1e293b; font-size: 14px; }
+        .form-group input[type="text"], .form-group textarea {
+            width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px;
+            font-size: 14px; box-sizing: border-box; font-family: inherit;
+        }
+        .form-group textarea { height: 80px; resize: vertical; }
+        
+        .submit-btn {
+            width: 100%; background: #11caa0; color: white; padding: 14px;
+            border-radius: 30px; font-weight: bold; font-size: 16px; border: none;
+            cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(17, 202, 160, 0.3);
+        }
+        .submit-btn:disabled { background: #cbd5e1; cursor: not-allowed; box-shadow: none; }
+        
         .leaflet-popup-content-wrapper { border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .popup-title { font-weight: bold; color: #003366; margin-bottom: 8px; font-size: 1.1em; border-bottom: 2px solid #11caa0; padding-bottom: 4px;}
         .popup-info { color: #475569; margin: 4px 0; font-size: 0.95em; }
@@ -31,63 +87,110 @@
     <div class="header">声を届ける、実態調査マップ 🌸</div>
     <div id="map"></div>
 
+    <button class="open-form-btn" id="openFormBtn">✍️ 声を届ける（入力画面へ）</button>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <button class="modal-close" id="closeFormBtn">&times;</button>
+            <h3 style="margin-top: 0; color: #003366; font-size: 20px;">アイテムを追加</h3>
+            
+            <div class="form-container">
+                <div class="declaration-box">
+                    <strong>【あなたの声を、社会を変える力に】</strong><br>
+                    このマップは、性風俗・売買春の現場で起きている「搾取」と「暴力」の実態を可視化し、内閣府の「売買春規制への法的検討会」へ提出する公式なデータ（立法事実）を集めるためのものです。<br><br>
+                    ここに書き込まれた実名やイニシャルなどの詳細データは、国への提出・実態証明のためだけに使用され、一般のインターネット上に公開されることは絶対にありません。あなたに危険が及ぶことや、特定されることはありませんので、どうか安心して、ありのままの事実を教えてください。<br><br>
+                    質問については、ご回答いただくことに精神的負担が大きいものもあります。ご回答が困難な場合は飛ばしていただいても大丈夫です。どうかご無理のない範囲でご協力いただけたら幸いです。
+                </div>
+                
+                <form id="voiceForm">
+                    <div class="form-group">
+                        <label>ハンドルネーム 🐈‍⬛ （空欄可）</label>
+                        <input type="text" id="nickname" placeholder="例：匿名のサバイバー">
+                    </div>
+                    <div class="form-group">
+                        <label>この店舗（グループ）にいる／いた期間を教えてください 📅</label>
+                        <input type="text" id="duration" placeholder="例：半年間、3年など">
+                    </div>
+                    <div class="form-group">
+                        <label>エリア 㟿（例：歌舞伎町1丁目など）</label>
+                        <input type="text" id="area" required placeholder="例：歌舞伎町">
+                    </div>
+                    <div class="form-group">
+                        <label>店舗名やスカウト名、グループ名など（※実名・イニシャルどちらでも可）</label>
+                        <input type="text" id="shopName">
+                    </div>
+                    <div class="form-group">
+                        <label>働くことになった経緯を書ける範囲で教えてください。</label>
+                        <textarea id="background" placeholder="おぼえている業者・スカウトの誘い文句などあれば、ご記入ください。"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>働くなかで「搾取」だと感じたこと</label>
+                        <textarea id="exploitation" placeholder="被害を軽くみられた、ピンハネ、罰金制度、補償がない、休めない、辞めさせてもらえないなど"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>"客"からの加害行為について</label>
+                        <textarea id="customerHarm" placeholder="強要や暴言（例：『金を払っているんだから言うことを聞け』など）、ストーカー行為、性暴力など"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>働くなかで及ぼされた心身への影響</label>
+                        <textarea id="healthImpact" placeholder="病気、精神的な不調、人間不信など"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>あなたの体験・とどけたい声（自由記述）</label>
+                        <textarea id="userVoice"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" id="submitBtn">提出</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // ① マップの初期設定（日本全体がフワッと見えるようにします）
-        const map = L.map('map').setView([36.2048, 138.2529], 5);
+        // 🔗 GASのWebアプリURL（先ほどコピーしたURLをここに貼り付けてください）
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxKG1-bYlsvkGyiaJ8mdhMUt5O6mDeoD2OLgUpFR4tTdj5-s328CQzNVsQ1PXutISR8ow/exec";
 
-        // ② 地図のデザイン（OpenStreetMapを使用）
+        // ① マップの初期設定
+        const map = L.map('map').setView([36.2048, 138.2529], 5);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors',
             maxZoom: 18
         }).addTo(map);
 
-        // ③ エリアの文字（例：歌舞伎町）を、地図上の座標（緯度・経度）に変換する魔法
+        // ② モーダルの開閉制御
+        const overlay = document.getElementById('modalOverlay');
+        document.getElementById('openFormBtn').addEventListener('click', () => overlay.classList.add('active'));
+        document.getElementById('closeFormBtn').addEventListener('click', () => overlay.classList.remove('active'));
+
+        // ③ 位置変換の定義
         async function getCoordinates(address) {
-            // ※瞬時にピンを立てるため、主要エリアはあらかじめ登録しておきます（みこちゃんのテスト用！）
             const knownLocations = {
-                "歌舞伎町": [35.6938, 139.7034],
-                "新宿": [35.6909, 139.7002],
-                "池袋": [35.7295, 139.7109],
-                "渋谷": [35.6580, 139.7016],
-                "横浜": [35.4437, 139.6380],
-                "東京": [35.6812, 139.7671]
+                "歌舞伎町": [35.6938, 139.7034], "新宿": [35.6909, 139.7002],
+                "池袋": [35.7295, 139.7109], "渋谷": [35.6580, 139.7016],
+                "横浜": [35.4437, 139.6380], "東京": [35.6812, 139.7671]
             };
-            
             for (let key in knownLocations) {
                 if (address.includes(key)) return knownLocations[key];
             }
-
-            // 登録されていない住所は、無料の検索システム（Nominatim）で探します
             try {
                 const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address + ' 日本')}`);
                 const data = await response.json();
-                if (data && data.length > 0) {
-                    return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-                }
-            } catch (e) {
-                console.error("位置情報の取得に失敗しました", e);
-            }
+                if (data && data.length > 0) return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+            } catch (e) { console.error(e); }
             return null; 
         }
 
-        // ④ さきほど届いた「data.json」を読み込んで、ピンを立てる！
+        // ④ データの読み込み＆ピン立て
         async function loadData() {
             try {
-                // 最新のデータを取得
                 const response = await fetch('data.json?' + new Date().getTime());
                 const data = await response.json();
-
                 for (const item of data) {
                     if (!item.area) continue;
-
                     const coords = await getCoordinates(item.area);
-
                     if (coords) {
-                        // ピンを配置
                         const marker = L.marker(coords).addTo(map);
-                        
-                        // 吹き出し（ポップアップ）の中身を作成
                         const popupContent = `
                             <div class="popup-title">${item.nickname || '匿名のサバイバー'} さん</div>
                             <div class="popup-info">📍 エリア：${item.area}</div>
@@ -96,13 +199,53 @@
                         marker.bindPopup(popupContent);
                     }
                 }
-            } catch (error) {
-                console.error('データの読み込みに失敗しました:', error);
-            }
+            } catch (error) { console.error(error); }
         }
-
-        // プログラム実行！
         loadData();
+
+        // ⑤ フォーム送信の処理（ページ遷移なし！）
+        document.getElementById('voiceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "送信中...";
+
+            const payload = {
+                nickname: document.getElementById('nickname').value,
+                duration: document.getElementById('duration').value,
+                area: document.getElementById('area').value,
+                shopName: document.getElementById('shopName').value,
+                background: document.getElementById('background').value,
+                exploitation: document.getElementById('exploitation').value,
+                customerHarm: document.getElementById('customerHarm').value,
+                healthImpact: document.getElementById('healthImpact').value,
+                userVoice: document.getElementById('userVoice').value
+            };
+
+            try {
+                // GASのWebアプリへデータを送信
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // クロスドメイン（セキュリティ対策）
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                alert("貴重な声を届けていただき、本当にありがとうございます。データは厳重に保管され、社会を変える力へと繋げます🌸");
+                document.getElementById('voiceForm').reset();
+                overlay.classList.remove('active');
+                
+                // 地図を更新して新しいピンを反映
+                setTimeout(() => { location.reload(); }, 1200);
+
+            } catch (error) {
+                alert("送信中にエラーが発生しました。時間をおいて再度お試しください。");
+                console.error(error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "提出";
+            }
+        });
     </script>
 </body>
 </html>
