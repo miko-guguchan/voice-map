@@ -84,7 +84,7 @@
     </style>
 </head>
 <body>
-    <div class="header">声を届ける、実態調査マップ 🌸</div>
+    <div class="header">声を届ける、実態調査マップ 🐈🌸</div>
     <div id="map"></div>
 
     <button class="open-form-btn" id="openFormBtn">✍️ 声を届ける（入力画面へ）</button>
@@ -97,46 +97,51 @@
             <div class="form-container">
                 <div class="declaration-box">
                     <strong>【あなたの声を、社会を変える力に】</strong><br>
-                    このマップは、性風俗・売買春の現場で起きている「搾取」と「暴力」の実態を可視化し、内閣府の「売買春規制への法的検討会」へ提出する公式なデータ（立法事実）を集めるためのものです。<br><br>
-                    ここに書き込まれた実名やイニシャルなどの詳細データは、国への提出・実態証明のためだけに使用され、一般のインターネット上に公開されることは絶対にありません。あなたに危険が及ぶことや、特定されることはありませんので、どうか安心して、ありのままの事実を教えてください。<br><br>
-                    質問については、ご回答いただくことに精神的負担が大きいものもあります。ご回答が困難な場合は飛ばしていただいても大丈夫です。どうかご無理のない範囲でご協力いただけたら幸いです。
+                    このマップは、性風俗・売買春の現場でなにが起こっているのか、その実態を可視化し、みなさんのありのままの「声」を集めて、法務局「売買春に係る規制の在り方検討会」へ提出するために当事者のひとりが立ち上げました。<br><br>
+                    ここに書き込んでいただいた内容は、検討会への提出のためだけに使用され、インターネット上や第三者に公開されることは絶対にありません。あなたに危険が及ぶことや、特定されることはありませんので、どうか安心して、ありのままの「声」をお聞かせください。<br><br>
+                    もし投稿内容に個人情報が含まれる場合は、個人が特定されないよう、趣旨を変えずに一部表現を修正することがあります。<br><br>
+                    質問のなかには、ご回答いただくことに精神的負担が大きいものもあるかとおもいます。ご回答が困難な場合は飛ばしていただいても大丈夫です。どうかご無理のない範囲でご協力いただけましたら幸いです。
                 </div>
                 
                 <form id="voiceForm">
                     <div class="form-group">
-                        <label>ハンドルネーム 🐈‍⬛ （空欄可）</label>
+                        <label>ハンドルネーム🐈🐾（空欄可）</label>
                         <input type="text" id="nickname" placeholder="例：匿名のサバイバー">
                     </div>
                     <div class="form-group">
-                        <label>この店舗（グループ）にいる／いた期間を教えてください 📅</label>
+                        <label>店舗名や事務所名、スカウトグループ名など（※実名・イニシャルどちらでも。）個人のかたは、"個人"とご記入ください。</label>
+                        <input type="text" id="shopName">
+                    </div>
+                     <div class="form-group">
+                        <label>エリア🗾📍（おおよその場所で大丈夫です）</label>
+                        <input type="text" id="area" required placeholder="例：歌舞伎町1丁目">
+                    </div>
+                    <div class="form-group">
+                        <label>この店舗（事務所など）の業種・業態をご記入ください。</label>
+                        <input type="text" id="category" placeholder="例：デリバリーヘルス、AV事務所など">
+                    </div>
+                    <div class="form-group">
+                        <label>この店舗（事務所など）に所属している／していた期間を教えてください📅</label>
                         <input type="text" id="duration" placeholder="例：半年間、3年など">
                     </div>
                     <div class="form-group">
-                        <label>エリア 㟿（例：歌舞伎町1丁目など）</label>
-                        <input type="text" id="area" required placeholder="例：歌舞伎町">
-                    </div>
-                    <div class="form-group">
-                        <label>店舗名やスカウト名、グループ名など（※実名・イニシャルどちらでも可）</label>
-                        <input type="text" id="shopName">
-                    </div>
-                    <div class="form-group">
                         <label>働くことになった経緯を書ける範囲で教えてください。</label>
-                        <textarea id="background" placeholder="おぼえている業者・スカウトの誘い文句などあれば、ご記入ください。"></textarea>
+                        <textarea id="background" placeholder="紹介業者・スカウトの誘い文句などもあれば、ご記入ください。"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>働くなかで「搾取」だと感じたこと</label>
-                        <textarea id="exploitation" placeholder="被害を軽くみられた、ピンハネ、罰金制度、補償がない、休めない、辞めさせてもらえないなど"></textarea>
+                        <label>働くなかで「搾取」や「不当」だと感じたこと</label>
+                        <textarea id="exploitation" placeholder="被害を軽くみられた、ハラスメント、ピンハネ、罰金制度、補償がない、休めない、辞めさせてもらえないなど"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>"客"からの加害行為について</label>
-                        <textarea id="customerHarm" placeholder="強要や暴言（例：『金を払っているんだから言うことを聞け』など）、ストーカー行為、性暴力など"></textarea>
+                        <label>"客"からの加害行為について。"客"の立場を利用した強要や暴言（例：『金を払っているんだから言う通りにしろ』など）、悪意をぶつけられたこと、ストーカー行為、暴力行為など。。衝撃を受けた事態を、書ける範囲で教えてください。</label>
+                        <textarea id="customerHarm"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>働くなかで及ぼされた心身への影響</label>
-                        <textarea id="healthImpact" placeholder="病気、精神的な不調、人間不信など"></textarea>
+                        <label>働くなかで及ばされた心身への影響、実質的な被害について（感染症、メンタルヘルス、けがや痛みの発症など）</label>
+                        <textarea id="healthImpact"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>あなたの体験・とどけたい声（自由記述）</label>
+                        <label>あなたの体験・とどけたい声（自由にお書きください🌸🫶🏻）</label>
                         <textarea id="userVoice"></textarea>
                     </div>
                     
@@ -212,9 +217,10 @@
 
             const payload = {
                 nickname: document.getElementById('nickname').value,
-                duration: document.getElementById('duration').value,
-                area: document.getElementById('area').value,
                 shopName: document.getElementById('shopName').value,
+                area: document.getElementById('area').value,
+                category: document.getElementById('category').value,
+                duration: document.getElementById('duration').value,
                 background: document.getElementById('background').value,
                 exploitation: document.getElementById('exploitation').value,
                 customerHarm: document.getElementById('customerHarm').value,
@@ -231,7 +237,7 @@
                     body: JSON.stringify(payload)
                 });
 
-                alert("貴重な声を届けていただき、本当にありがとうございます。データは厳重に保管され、社会を変える力へと繋げます🌸");
+                alert("貴重な声を届けていただき、ほんとうにありがとうございます。データは厳重に保管され、社会を変える力へと繋げます🐈🌸");
                 document.getElementById('voiceForm').reset();
                 overlay.classList.remove('active');
                 
