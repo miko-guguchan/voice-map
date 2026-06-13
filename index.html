@@ -81,6 +81,16 @@
         .leaflet-popup-content-wrapper { border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .popup-title { font-weight: bold; color: #003366; margin-bottom: 8px; font-size: 1.1em; border-bottom: 2px solid #11caa0; padding-bottom: 4px;}
         .popup-info { color: #475569; margin: 4px 0; font-size: 0.95em; }
+        /* 📢 シェアボタンのデザイン */
+        .share-btn {
+            position: fixed; bottom: 90px; right: 20px; z-index: 1000;
+            background: #11caa0; color: white; padding: 10px 20px;
+            border-radius: 30px; font-weight: bold; text-decoration: none;
+            box-shadow: 0 4px 12px rgba(17, 202, 160, 0.3);
+            font-size: 14px; border: none; cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+        .share-btn:hover { background: #0fa683; transform: scale(1.05); }
     </style>
 </head>
 <body>
@@ -88,6 +98,17 @@
     <div id="map"></div>
 
     <button class="open-form-btn" id="openFormBtn">✍️ 声を届ける（入力画面へ）</button>
+<button class="share-btn" id="shareBtn">📢 マップをシェア</button>
+
+    <div class="modal-overlay" id="shareModalOverlay">
+        <div class="modal-content" style="max-width: 300px; height: auto; text-align: center; align-items: center;">
+            <button class="modal-close" id="closeShareBtn">&times;</button>
+            <h4 style="margin-top: 0; color: #003366;">スマホで簡単シェア 🌸</h4>
+            <div id="qrcodeContainer" style="margin: 15px 0;"></div>
+            <p style="font-size: 12px; color: #64748b; margin: 0; line-height: 1.4;">このQRコードをスマホのカメラで読み取ると、簡単にマップにアクセスできます。</p>
+        </div>
+    </div>
+    
 
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-content">
@@ -253,6 +274,19 @@
                 submitBtn.innerText = "提出";
             }
         });
+  // 📢 新しく追加：シェア用モーダルの制御とQRコード自動生成
+        const shareOverlay = document.getElementById('shareModalOverlay');
+        const qrcodeContainer = document.getElementById('qrcodeContainer');
+
+        document.getElementById('shareBtn').addEventListener('click', () => {
+            const currentUrl = window.location.href;
+            qrcodeContainer.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(currentUrl)}" alt="QR Code" style="border: 4px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">`;
+            shareOverlay.classList.add('active');
+        });
+
+        document.getElementById('closeShareBtn').addEventListener('click', () => {
+            shareOverlay.classList.remove('active');
+        });      
     </script>
 </body>
 </html>
